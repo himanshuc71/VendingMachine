@@ -102,22 +102,15 @@ public class PaymentUnitTest {
     @Test
 
     public void testMakePurchaseWhenNoChange() {
-        machine.addCoinsToBanked(Coin.QUARTER, 3);
-        machine.addCoinsToBanked(Coin.DIME, 3);
-        machine.addCoinsToBanked(Coin.NICKEL, 2);
         machine.insertCoin(Coin.LOONIE);
-        List<Coin> change;
-        change = new ArrayList<Coin>();
-        assertEquals(change, machine.makePurchase(100));
-        assertEquals(0, machine.getValueOfCoinsInserted());
-        assertEquals(215, machine.getValueOfCoinsBanked());
+        assertEquals(new ArrayList<Coin>(), machine.makePurchase(100));
 
     }
 
     @Test
 
     public void testMakePurchaseWhenFullChangeCannotBeReturned() {
-        machine.addCoinsToBanked(Coin.QUARTER, 3);
+        machine.addCoinsToBanked(Coin.QUARTER,3);
         machine.addCoinsToBanked(Coin.DIME, 3);
         machine.addCoinsToBanked(Coin.NICKEL, 2);
         List<Coin> change;
@@ -127,27 +120,13 @@ public class PaymentUnitTest {
         change.add(Coin.QUARTER);
         change.add(Coin.DIME);
         assertEquals(change, machine.makePurchase(36));
-        assertEquals(0, machine.getValueOfCoinsInserted());
-        assertEquals(155, machine.getValueOfCoinsBanked());
-
-    }
-
-    @Test
-
-    public void testMakePurchaseWhenNoChangeCanBeReturned() {
-        List<Coin> change;
-        machine.insertCoin(Coin.NICKEL);
-        change = new ArrayList<Coin>();
-        assertEquals(change, machine.makePurchase(3));
-        assertEquals(0, machine.getValueOfCoinsInserted());
-        assertEquals(5, machine.getValueOfCoinsBanked());
 
     }
 
     @Test
 
     public void testMakePurchaseWhenFullChangeCanBeReturned() {
-        machine.addCoinsToBanked(Coin.QUARTER, 3);
+        machine.addCoinsToBanked(Coin.QUARTER,3);
         machine.addCoinsToBanked(Coin.DIME, 3);
         machine.addCoinsToBanked(Coin.NICKEL, 4);
         List<Coin> change;
@@ -155,11 +134,10 @@ public class PaymentUnitTest {
         machine.insertCoin(Coin.QUARTER);
         machine.insertCoin(Coin.QUARTER);
         machine.insertCoin(Coin.DIME);
+        machine.insertCoin(Coin.NICKEL);
         change = new ArrayList<Coin>();
-        change.add(Coin.NICKEL);
+        change.add(Coin.DIME);
         assertEquals(change, machine.makePurchase(155));
-        assertEquals(0, machine.getValueOfCoinsInserted());
-        assertEquals(280, machine.getValueOfCoinsBanked());
 
     }
 
