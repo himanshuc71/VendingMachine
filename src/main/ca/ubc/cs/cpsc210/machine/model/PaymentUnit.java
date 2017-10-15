@@ -136,27 +136,41 @@ public class PaymentUnit {
 
     //EFFECTS: returns the list of coins required as change for a transaction, helper for makePurchase()
 
-    public List<Coin> change(int cost) {
+    private List<Coin> change(int cost) {
         int l;
         int q;
         int d;
         int n;
         List<Coin> changeList = new ArrayList<>();
         int change = getValueOfCoinsInserted() - cost;
-        if (change == 0)
+        if (change == 0) {
+            currentTransaction.clear();
             return changeList;
-        else {
-            l = change / Coin.LOONIE.getValue();
-            change = change - l * Coin.LOONIE.getValue();
-            q = change / Coin.QUARTER.getValue();
-            change = change - q * Coin.QUARTER.getValue();
-            d = change / Coin.DIME.getValue();
-            change = change - d * Coin.QUARTER.getValue();
-            n = change / Coin.NICKEL.getValue();
-            addCoin(changeList, Coin.LOONIE, l);
-            addCoin(changeList, Coin.QUARTER, q);
-            addCoin(changeList, Coin.DIME, d);
-            addCoin(changeList, Coin.NICKEL, n);
+        } else {
+            if (this.numLoonies != 0) {
+                l = change / Coin.LOONIE.getValue();
+                change = change - l * Coin.LOONIE.getValue();
+                this.numLoonies = this.numLoonies - l;
+                addCoin(changeList, Coin.LOONIE, l);
+            }
+            if (this.numQuarters != 0) {
+                q = change / Coin.QUARTER.getValue();
+                change = change - q * Coin.QUARTER.getValue();
+                this.numQuarters = this.numQuarters - q;
+                addCoin(changeList, Coin.QUARTER, q);
+            }
+            if (this.numDimes != 0) {
+                d = change / Coin.DIME.getValue();
+                change = change - d * Coin.DIME.getValue();
+                this.numDimes = this.numDimes - d;
+                addCoin(changeList, Coin.DIME, d);
+            }
+            if (this.numNickels != 0) {
+                n = change / Coin.NICKEL.getValue();
+                this.numNickels = this.numNickels - n;
+                addCoin(changeList, Coin.NICKEL, n);
+            }
+            currentTransaction.clear();
         }
 
         return changeList;
@@ -165,7 +179,7 @@ public class PaymentUnit {
 
     //EFFECTS: adds a Coin to the List a certain number of times
 
-    public void addCoin(List<Coin> l, Coin c, int number) {
+    private void addCoin(List<Coin> l, Coin c, int number) {
         for (int i = 0; i < number; i++) {
             l.add(c);
         }
