@@ -135,54 +135,41 @@ public class PaymentUnit {
     }
 
     //EFFECTS: returns the list of coins required as change for a transaction, helper for makePurchase()
-
+    //still producing more than it is having.. going -ve. Fix that and you're done.
     private List<Coin> change(int cost) {
-        int l;
-        int q;
-        int d;
-        int n;
+
         List<Coin> changeList = new ArrayList<>();
         int change = getValueOfCoinsInserted() - cost;
         if (change == 0) {
             currentTransaction.clear();
             return changeList;
         } else {
-            if (this.numLoonies != 0) {
-                l = change / Coin.LOONIE.getValue();
-                change = change - l * Coin.LOONIE.getValue();
-                this.numLoonies = this.numLoonies - l;
-                addCoin(changeList, Coin.LOONIE, l);
+            while (this.numLoonies > 0 && change >= Coin.LOONIE.getValue()) {
+                change = change - Coin.LOONIE.getValue();
+                this.numLoonies--;
+                changeList.add(Coin.LOONIE);
             }
-            if (this.numQuarters != 0) {
-                q = change / Coin.QUARTER.getValue();
-                change = change - q * Coin.QUARTER.getValue();
-                this.numQuarters = this.numQuarters - q;
-                addCoin(changeList, Coin.QUARTER, q);
+
+            while (this.numQuarters > 0 && change >= Coin.QUARTER.getValue()) {
+                change = change - Coin.QUARTER.getValue();
+                this.numQuarters--;
+                changeList.add(Coin.QUARTER);
             }
-            if (this.numDimes != 0) {
-                d = change / Coin.DIME.getValue();
-                change = change - d * Coin.DIME.getValue();
-                this.numDimes = this.numDimes - d;
-                addCoin(changeList, Coin.DIME, d);
+
+            while (this.numDimes > 0 && change >= Coin.DIME.getValue()) {
+                change = change - Coin.DIME.getValue();
+                this.numDimes--;
+                changeList.add(Coin.DIME);
             }
-            if (this.numNickels != 0) {
-                n = change / Coin.NICKEL.getValue();
-                this.numNickels = this.numNickels - n;
-                addCoin(changeList, Coin.NICKEL, n);
+            while (this.numNickels > 0 && change >= Coin.NICKEL.getValue()) {
+                change = change - Coin.NICKEL.getValue();
+                this.numNickels--;
+                changeList.add(Coin.NICKEL);
             }
             currentTransaction.clear();
         }
-
         return changeList;
 
-    }
-
-    //EFFECTS: adds a Coin to the List a certain number of times
-
-    private void addCoin(List<Coin> l, Coin c, int number) {
-        for (int i = 0; i < number; i++) {
-            l.add(c);
-        }
     }
 
 }

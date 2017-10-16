@@ -104,6 +104,8 @@ public class PaymentUnitTest {
     public void testMakePurchaseWhenNoChange() {
         machine.insertCoin(Coin.LOONIE);
         assertEquals(new ArrayList<Coin>(), machine.makePurchase(100));
+        assertEquals(0,machine.getValueOfCoinsInserted());
+        assertEquals(100,machine.getValueOfCoinsBanked());
 
     }
 
@@ -120,6 +122,8 @@ public class PaymentUnitTest {
         change.add(Coin.QUARTER);
         change.add(Coin.DIME);
         assertEquals(change, machine.makePurchase(36));
+        assertEquals(0,machine.getValueOfCoinsInserted());
+        assertEquals(155,machine.getValueOfCoinsBanked());
 
     }
 
@@ -138,7 +142,53 @@ public class PaymentUnitTest {
         change = new ArrayList<Coin>();
         change.add(Coin.DIME);
         assertEquals(change, machine.makePurchase(155));
+        assertEquals(0,machine.getValueOfCoinsInserted());
+        assertEquals(280,machine.getValueOfCoinsBanked());
 
+    }
+
+    @Test
+
+    public void testMakePurchaseCorrectCoinsAreReturned(){
+        machine.addCoinsToBanked(Coin.QUARTER,1);
+        machine.addCoinsToBanked(Coin.DIME,4);
+
+        List<Coin> change;
+        machine.insertCoin(Coin.LOONIE);
+        change=new ArrayList<>();
+        change.add(Coin.QUARTER);
+        change.add(Coin.DIME);
+        assertEquals(change,machine.makePurchase(60));
+        assertEquals(0,machine.getValueOfCoinsInserted());
+        assertEquals(130,machine.getValueOfCoinsBanked());
+    }
+
+    @Test
+
+    public void testMakePurchaseCoverageCases(){
+        machine.addCoinsToBanked(Coin.DIME,1);
+        machine.addCoinsToBanked(Coin.NICKEL,3);
+
+        List<Coin> change=new ArrayList<>();
+        machine.insertCoin(Coin.LOONIE);
+        change.add(Coin.DIME);
+        change.add(Coin.NICKEL);
+        change.add(Coin.NICKEL);
+        change.add(Coin.NICKEL);
+        assertEquals(change,machine.makePurchase(75));
+        assertEquals(0,machine.getValueOfCoinsInserted());
+        assertEquals(100,machine.getValueOfCoinsBanked());
+    }
+
+    @Test
+
+    public void testMakePurchaseCoverageCases2(){
+        List<Coin> change=new ArrayList<>();
+        machine.insertCoin(Coin.LOONIE);
+        change.add(Coin.LOONIE);
+        assertEquals(change,machine.makePurchase(0));
+        assertEquals(0,machine.getValueOfCoinsInserted());
+        assertEquals(0,machine.getValueOfCoinsBanked());
     }
 
 
